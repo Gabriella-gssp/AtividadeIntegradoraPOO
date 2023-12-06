@@ -1,0 +1,49 @@
+package com.example.atividadeintegradorapoo.DAO;
+
+import com.example.atividadeintegradorapoo.Services.DataBaseConnector;
+import com.example.atividadeintegradorapoo.Models.NumeroProcessoGenerator;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+public class NumeroProcessoGeneratorDAO {
+    private static final String SELECT_BY_TIPO = "SELECT * FROM NumeroProcessoGenerator WHERE tipo_processo = ?";
+    private static final String UPDATE_ULTIMO_NUMERO = "UPDATE NumeroProcessoGenerator SET ultimo_numero = ? WHERE tipo_processo = ?";
+
+    public NumeroProcessoGenerator getByTipo(String tipo) {
+        try (Connection connection = DataBaseConnector.conectar();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_TIPO)) {
+
+            preparedStatement.setString(1, tipo);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    NumeroProcessoGenerator generator = new NumeroProcessoGenerator();
+                    generator.setIdGenerator(resultSet.getInt("id_generator"));
+                    generator.setTipoProcesso(resultSet.getString("tipo_processo"));
+                    generator.setUltimoNumero(resultSet.getInt("ultimo_numero"));
+                    return generator;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao obter gerador de número de processo", e);
+        }
+        return null;
+    }
+
+    public void updateUltimoNumero(NumeroProcessoGenerator generator) {
+        try (Connection connection = DataBaseConnector.conectar();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ULTIMO_NUMERO)) {
+
+            preparedStatement.setInt(1, generator.getUltimoNumero());
+            preparedStatement.setString(2, generator.getTipoProcesso());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar último número do gerador de processo", e);
+        }
+    }
+}
