@@ -8,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 public class NumeroProcessoGeneratorDAO {
-    private static final String SELECT_BY_TIPO = "SELECT * FROM NumeroProcessoGenerator WHERE tipo_processo = ?";
-    private static final String UPDATE_ULTIMO_NUMERO = "UPDATE NumeroProcessoGenerator SET ultimo_numero = ? WHERE tipo_processo = ?";
+    private static final String SELECT_BY_TIPO = "SELECT * FROM NumeroProcessoGenerator WHERE tipoProcesso = ?";
+    private static final String UPDATE_ULTIMO_NUMERO = "UPDATE NumeroProcessoGenerator SET ultimoNumero = ? WHERE tipoProcesso = ?";
 
     public NumeroProcessoGenerator getByTipo(String tipo) {
         try (Connection connection = DataBaseConnector.conectar();
